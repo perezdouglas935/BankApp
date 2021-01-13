@@ -2,6 +2,7 @@ package maven.Testing.Bank_App;
 
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public abstract class Account  implements Serializable{
     private double balance = 0;
     private int account_Number;
