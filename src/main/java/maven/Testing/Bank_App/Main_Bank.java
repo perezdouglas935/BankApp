@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Main_Bank implements Serializable {
 
-    private DbService database = new DbService();
+    private Database database = new Database();
 
     Customer_Info Open_Account(String First_Name, String Last_Name, String SSN, Account_Type type, Double balance) {
         int accountId = database.AddAccount(First_Name, Last_Name, SSN, type, balance);
@@ -60,7 +60,7 @@ public class Main_Bank implements Serializable {
 
     public static double round(double value, int places) {
         if (places < 0) {
-            throw new Illegal_Argument_Exception();
+            throw new IllegalArgumentException();
         }
         BigDecimal bd = new BigDecimal(value);
         bd = bd.setScale(places, RoundingMode.HALF_UP);

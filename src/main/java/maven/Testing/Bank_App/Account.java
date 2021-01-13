@@ -18,23 +18,17 @@ public abstract class Account  implements Serializable{
                 "Account Number: " + this.getaccount_Number() + "\n" +
                 "Balance: " + this.getBalance() + "\n";
     }
-    /**
-     * @return the balance
-     */
+
     public double getBalance() {
         return balance;
     }
 
-    /**
-     * @param balance the balance to set
-     */
+
     public final void Set_Balance(double balance) {
         this.balance = balance;
     }
 
-    /**
-     * @return the account_Number
-     */
+
     public int getaccount_Number() {
         return account_Number;
     }
