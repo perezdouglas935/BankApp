@@ -53,7 +53,7 @@ public class Database {
             }
             //Link User to Account_Type
             if (userId > 0 && account_Id > 0) {
-                try (PreparedStatement linkAccount_Type = connection.prepareStatement("INSERT INTO Mappings(UserId, Account_Id) VALUES(?,?)")) {
+                try (PreparedStatement linkAccount_Type = connection.prepareStatement("INSERT INTO Mappings(UserId, account_Id) VALUES(?,?)")) {
                     linkAccount_Type.setInt(1, userId);
                     linkAccount_Type.setInt(2, account_Id);
                     linkAccount_Type.executeUpdate();
@@ -67,7 +67,7 @@ public class Database {
         } catch (SQLException ex) {
             System.err.println("An error has occured." + ex.getMessage());
         }
-        return Account_Id;
+        return account_Id;
     }
     //Read Details
     Customer_Info GetAccount_Type(int account_Id) {
@@ -77,7 +77,7 @@ public class Database {
             try (PreparedStatement findUser = connection.prepareStatement(
                     "SELECT first_Name,last_Name,ssn,Type,Balance "
                     + "FROM Users a JOIN Mappings b on a.ID = b.UserId "
-                    + "JOIN Account_Types c on b.Account_Id = c.ID "
+                    + "JOIN Account_Types c on b.account_Id = c.ID "
                     + "WHERE c.ID = ?")) {
                 findUser.setInt(1, account_Id);
                 ResultSet findUserResults = findUser.executeQuery();
@@ -85,31 +85,31 @@ public class Database {
                     String first_Name = findUserResults.getString("first_Name");
                     String last_Name = findUserResults.getString("last_Name");
                     String ssn = findUserResults.getString("ssn");
-                    String Account_Type_Type = findUserResults.getString("Type");
+                    String account_Type = findUserResults.getString("Type");
                     Double balance = findUserResults.getDouble("Balance");
-                    Account account;
+                    Account account = null;
                     if (account_Type.equals(Account_Type.Checking.name())) {
                     	account = new Checking(account_Id, balance);
                     } else {
                         account = new Savings(account_Id, balance);
                     }
-                    customer = new Customer_Info(first_Name, last_Name, ssn, Account_Type);
+                    customer = new Customer_Info(first_Name, last_Name, ssn, account);
                 }
             }
         } catch (SQLException ex) {
             System.err.println("An error has occured." + ex.getMessage());
         }
-        return Customer_Info;
+        return customer;
     }
     //Update (Edit Account)
-    boolean UpdateAccount_Type(int Account_Id, Double newBalance){
+    boolean UpdateAccount_Type(int account_Id, Double newBalance){
         boolean success = false;
         Connection connection = connect();
         try {
             try (PreparedStatement updateBalance = connection.prepareStatement(
                     "UPDATE Account_Types SET Balance = ? WHERE ID = ?")) {
                 updateBalance.setDouble(1, newBalance);
-                updateBalance.setInt(2, Account_Id);
+                updateBalance.setInt(2, account_Id);
                 updateBalance.executeUpdate();
             }
             success = true;
@@ -119,16 +119,16 @@ public class Database {
         return success;
     }
     //Delete (Remove Account)
-    boolean DeleteAccount_Type(int Account_Id) {
+    boolean DeleteAccount_Type(int account_Id) {
         boolean success = false;
         Connection connection = connect();
         try {
             try (PreparedStatement deleteRecords = connection.prepareStatement(
                     "DELETE Users,Account_Types FROM Users "
                     + "JOIN Mappings on Users.ID = Mappings.UserId "
-                    + "JOIN Account_Types on Account_Types.ID = Mappings.Account_Id "
+                    + "JOIN Account_Types on Account_Types.ID = Mappings.account_Id "
                     + "WHERE Account_Types.ID = ?")) {
-                deleteRecords.setInt(1, Account_Id);
+                deleteRecords.setInt(1, account_Id);
                 deleteRecords.executeUpdate();
             }
             success = true;
@@ -143,9 +143,9 @@ public class Database {
         Connection connection = connect();
         try {
             try (PreparedStatement findUser = connection.prepareStatement(
-                    "SELECT Account_Id,first_Name,last_Name,ssn,Type,Balance "
+                    "SELECT account_Id,first_Name,last_Name,ssn,Type,Balance "
                     + "FROM Users a JOIN Mappings b on a.ID = b.UserId "
-                    + "JOIN Account_Types c on b.Account_Id = c.ID")) {
+                    + "JOIN Account_Types c on b.account_Id = c.ID")) {
                 ResultSet findUserResults = findUser.executeQuery();
                 while (findUserResults.next()) {
                     String first_Name = findUserResults.getString("First Name");
@@ -154,19 +154,19 @@ public class Database {
                     String account_Type = findUserResults.getString("Type");
                     Double balance = findUserResults.getDouble("Balance");
                     int account_Id = findUserResults.getInt("AccountID");
-                    Account_Type account;
-                    if (account_Type_Type.equals(Account_Type.Checking.name())) {
+                    Account account;
+                    if (account_Type.equals(Account_Type.Checking.name())) {
                         account = new Checking(account_Id, balance);
                     } else {
-                        account = new Savings(Account_Id, balance);
+                        account = new Savings(account_Id, balance);
                     }
-                    Customer_Info customer = new Customer_Info(first_Name, last_Name, ssn, Account_Type);
+                    Customer_Info customer = new Customer_Info(first_Name, last_Name, ssn, account);
                     customers.add(customer);
                 }
             }
         } catch (SQLException ex) {
             System.err.println("An error has occured." + ex.getMessage());
         }
-        return Customers_Info;
+        return customers;
     }
 }
