@@ -12,20 +12,20 @@ public class Main_Bank implements Serializable {
 
     Customer_Info Open_Account(String First_Name, String Last_Name, String SSN, Account_Type type, Double balance) {
         int accountId = database.AddAccount(First_Name, Last_Name, SSN, type, balance);
-        Customer_Info Customer_Info = database.GetAccount(accountId);
+        Customer_Info Customer_Info = database.GetAccount_Type(accountId);
         return Customer_Info;
     }
     
     boolean closeAccount(int accountId) {
-        return database.DeleteAccount(accountId);
+        return database.DeleteAccount_Type(accountId);
     }
 
     Customer_Info getCustomer_Info(int accountId) {
-        return database.GetAccount(accountId);
+        return database.GetAccount_Type(accountId);
     }
 
     ArrayList<Customer_Info> getCustomer_Infos() {
-        return database.GetAllAccounts();
+        return database.GetAllAccount_Types();
     }
 
     void withdraw(int accountId, double amount) throws Insufficient_Funds_Exception {
@@ -35,7 +35,7 @@ public class Main_Bank implements Serializable {
             throw new Insufficient_Funds_Exception();
         }
         double newBalance = Customer_Info.getAccount().getBalance() - (amount + transaction_Fee);
-        database.UpdateAccount(accountId, newBalance);
+        database.UpdateAccount_Type(accountId, newBalance);
     }
 
     void deposit(int accountId, double amount) throws Invalid_Amount_Exception {
@@ -45,7 +45,7 @@ public class Main_Bank implements Serializable {
         }
         double interest = checkInterest(Customer_Info.getAccount().getBalance(), amount);
         double amountToDeposit = amount + (amount * interest);
-        database.UpdateAccount(accountId, Customer_Info.getAccount().getBalance() + amountToDeposit);
+        database.UpdateAccount_Type(accountId, Customer_Info.getAccount().getBalance() + amountToDeposit);
     }
 
     public double checkInterest(double balance, double amount) {
